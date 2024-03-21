@@ -9,7 +9,7 @@ tobedone = error "this still needs to be done"
 
 
 data Interval = Interval { low :: Rational, high:: Rational }
-    deriving Show
+    -- deriving Show
 
 -- Q1
 mkInterval :: Rational -> Rational -> Interval
@@ -29,9 +29,9 @@ isin n (Interval x y)= n >= x && n < y
 
 -- Q5
 scale10 :: Interval -> Interval
-scale10 (Interval x y) = mkInterval (x*10)(y*10)
+scale10 (Interval x y) = mkInterval (x*10) (y*10)
 
-data FixedPointNumber = FixedPointNumber { mantissa :: Integer, shift :: Int }]
+data FixedPointNumber = FixedPointNumber { mantissa :: Integer, shift :: Int }
 
 -- Q6
 shift1 :: FixedPointNumber -> FixedPointNumber
@@ -45,16 +45,20 @@ instance Show FixedPointNumber where
         | otherwise = take (length (show x) - y) (show x) ++ "." ++ drop (length (show x) - y) (show x)
 
 -- Q8  
--- midpoint?
--- scale 10 until 
 decimalInfo :: Interval -> Maybe FixedPointNumber
-decimalInfo x 
+decimalInfo x
     | ilength x == 0 = Nothing
-    | otherwise = Just (FixedPointNumber (floor 1.032032) 2)
+    | otherwise = Just (recursion x)
+    where
+        recursion x
+            | fromIntegral(floor(fromRational (midpoint x))) == midpoint x = FixedPointNumber (floor(fromRational(midpoint x))) 0
+            | otherwise = shift1 (fromJust (decimalInfo (scale10 x)))
 
 -- Q9       
--- instance Show Interval where
---     show i = tobedone
+instance Show Interval where
+    show i 
+        | ilength i == 0 = show (midpoint i)
+        | otherwise = show (decimalInfo i)
 
 -- if you struggle to make this work, use the hack below
 -- that works if the precision is not too egregious
@@ -75,6 +79,7 @@ hackedshow i | low i/=high i
                commons [] []        = []
                commons _  _         = error "bounds not right"
 -- Q10
+-- https://www.cuemath.com/algebra/squares-and-square-roots/
 sqrtAlgo :: Rational -> Interval -> Rational -> Interval
 sqrtAlgo = tobedone
 
