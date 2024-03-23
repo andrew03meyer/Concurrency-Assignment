@@ -57,7 +57,6 @@ decimalInfo x
 -- Q9       
 instance Show Interval where
     show i = hackedshow i
-    -- show i 
     --     | ilength i == 0 = show (midpoint i)
     --     | otherwise = show (decimalInfo i)
 
@@ -84,7 +83,10 @@ hackedshow i | low i/=high i
 sqrtAlgo :: Rational -> Interval -> Rational -> Interval
 sqrtAlgo x y z
     | ilength y < z = y
-    | otherwise = sqrtAlgo x (mkInterval (midpoint y) (x / midpoint y)) z
+    | otherwise = sqrtAlgo x (rootInterval x y) z
+    where
+        rootInterval :: Rational -> Interval -> Interval
+        rootInterval x (Interval a b) = mkInterval (midpoint (mkInterval a b)) (x / midpoint (mkInterval a b))
 
 
 class PerfectSqrt a
