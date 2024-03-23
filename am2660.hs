@@ -99,7 +99,7 @@ instance PerfectSqrt Integer where
         | root*root == n = Just root
         | otherwise = Nothing
         where
-            root = ceiling(fromRational (low (sqrtAlgo (fromInteger n) (mkInterval (fromInteger n-1) (fromInteger n+1)) 1)))
+            root = ceiling (low (sqrtAlgo (fromInteger n) (mkInterval 0 (fromInteger n)) 1))
 
 -- Q12  
 -- this is effectively the instance for Rational
