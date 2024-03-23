@@ -51,12 +51,12 @@ decimalInfo x
     | otherwise = Just (recursion x)
     where
         recursion x
-            | fromIntegral(floor(fromRational (midpoint x))) == midpoint x = FixedPointNumber (floor(fromRational(midpoint x))) 0
+            | fromIntegral (floor (fromRational (midpoint x))) == midpoint x = FixedPointNumber (floor (fromRational (midpoint x))) 0
             | otherwise = shift1 (fromJust (decimalInfo (scale10 x)))
 
 -- Q9       
 instance Show Interval where
-    show i = hackedshow i
+    show = hackedshow
     --     | ilength i == 0 = show (midpoint i)
     --     | otherwise = show (decimalInfo i)
 
@@ -95,7 +95,11 @@ class PerfectSqrt a
 
 -- Q11
 instance PerfectSqrt Integer where
-    perfectSqrt n = tobedone
+    perfectSqrt n
+        | root*root == n = Just root
+        | otherwise = Nothing
+        where
+            root = ceiling(fromRational (low (sqrtAlgo (fromInteger n) (mkInterval (fromInteger n-1) (fromInteger n+1)) 1)))
 
 -- Q12  
 -- this is effectively the instance for Rational
