@@ -109,7 +109,10 @@ instance PerfectSqrt Integer where
 -- and we have to jump through a hoop that makes this
 -- more compositional to pacify the compiler
 instance (Integral a,PerfectSqrt a) => PerfectSqrt (Ratio a) where
-    perfectSqrt r = tobedone
+    perfectSqrt r = do
+        n <- perfectSqrt (numerator r)
+        d <- perfectSqrt (denominator r)
+        return (n % d)
 
 type Request = (Rational,Chan Response)
 type Response = Maybe Interval
