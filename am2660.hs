@@ -56,9 +56,10 @@ decimalInfo x
 
 -- Q9       
 instance Show Interval where
-    show i 
-        | ilength i == 0 = show (midpoint i)
-        | otherwise = show (decimalInfo i)
+    show i = hackedshow i
+    -- show i 
+    --     | ilength i == 0 = show (midpoint i)
+    --     | otherwise = show (decimalInfo i)
 
 -- if you struggle to make this work, use the hack below
 -- that works if the precision is not too egregious
@@ -79,22 +80,11 @@ hackedshow i | low i/=high i
                commons [] []        = []
                commons _  _         = error "bounds not right"
 -- Q10
--- https://www.cuemath.com/algebra/squares-and-square-roots/
-
--- sqrtAlgo :: Rational -> Interval -> Rational -> Interval
--- sqrtAlgo x y z 
---     | length (show x) == length z = y
---     | otherwise = sqrtAlgo` x y z
---         where sqrtAlgo` x y z =
---             sqrtAlgo x (Interval ((low y) + x / low y) / 2 ((low y) + x / low y) / 2) z
 
 sqrtAlgo :: Rational -> Interval -> Rational -> Interval
 sqrtAlgo x y z
-    | length (show (low y)) >= 7 = y
-    | otherwise = sqrtAlgo x (updateInterval x y) z
-    where
-        updateInterval :: Rational -> Interval -> Interval
-        updateInterval x (Interval a b) = Interval ((a + x / a) / 2) ((b + x / b) / 2)
+    | ilength y < z = y
+    | otherwise = sqrtAlgo x (mkInterval (midpoint y) (x / midpoint y)) z
 
 
 class PerfectSqrt a
