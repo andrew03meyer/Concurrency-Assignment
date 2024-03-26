@@ -121,15 +121,40 @@ data Connection = Connection { service:: Chan Request, answers:: Chan Response }
 
 -- Q13
 setupSqrt :: Rational -> IO (Chan Request)
-setupSqrt r = tobedone
+setupSqrt r = do
+    c <- newChan
+    forkIO (sqrtProcess r c)
+    return c
 
 -- Q14 
-sqrtProcess = tobedone
+sqrtProcess :: Rational -> Chan Request -> IO()
+sqrtProcess r c =
+    do
+        (marg, ans) <- readChan c
+        if marg == 0
+        then do
+            -- x <- readChan c -- to clear the channel
+            writeChan ans Nothing
+        else do
+            let result = sqrtAlgo r (mkInterval 0 r) marg
+            if ilength result < 0
+                then
+                    writeChan ans Nothing
+                else
+                    writeChan ans (Just result)
+            sqrtProcess r c
 
 -- Q15                    
 createConnection :: Chan Request -> IO Connection
-createConnection c = tobedone
+createConnection req =
+    do
+        ans <- newChan
+        return (Connection req ans)
+
 
 -- Q16
 useConnection :: Connection -> Rational -> IO (Maybe Interval)
-useConnection = tobedone
+useConnection c n =
+    do
+        writeChan (service c) (n, answers c)
+        readChan (answers c)
