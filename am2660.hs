@@ -142,7 +142,7 @@ sqrtProcess r c =
                     writeChan ans Nothing
                 else
                     writeChan ans (Just result)
-            sqrtProcess r c
+        sqrtProcess r c
 
 -- Q15                    
 createConnection :: Chan Request -> IO Connection
